@@ -138,9 +138,11 @@ func (p *AdmonitionParser) Open(_ ast.Node, reader text.Reader, _ parser.Context
 	quotedTitle := matches[4]
 	unquotedTitle := strings.TrimSpace(matches[5])
 
-	if !admonitionTypes[adType] {
-		return nil, parser.NoChildren
-	}
+	// pype.dev fork: accept arbitrary admonition types, matching
+	// python-markdown/mkdocs behavior — the type becomes the CSS class and
+	// the capitalized default title. Upstream gate was:
+	//   if !admonitionTypes[adType] { return nil, parser.NoChildren }
+	_ = admonitionTypes
 
 	// Determine collapsible state from marker
 	collapsible := strings.HasPrefix(marker, "???")
