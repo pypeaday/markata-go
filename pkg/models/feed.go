@@ -1,5 +1,7 @@
 package models
 
+import "strings"
+
 // PaginationType represents the type of pagination to use.
 type PaginationType string
 
@@ -407,6 +409,10 @@ func (f *FeedConfig) ApplyDefaults(defaults FeedDefaults) {
 
 // Paginate divides the Posts slice into pages based on ItemsPerPage and OrphanThreshold.
 func (f *FeedConfig) Paginate(baseURL string) {
+	// Normalize so root-feed URLs join cleanly: "" and "/" must both yield
+	// "/page/N/" — a trailing slash would produce "//page/N/".
+	baseURL = strings.TrimSuffix(baseURL, "/")
+
 	if len(f.Posts) == 0 {
 		f.Pages = []FeedPage{}
 		return
