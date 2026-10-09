@@ -630,6 +630,7 @@ func filterPlaintext(in, _ *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 
 var (
 	summaryDropBlockRe  = regexp.MustCompile(`(?is)<(pre|code|script|style|figure|table|svg)\b[^>]*>.*?</\s*(pre|code|script|style|figure|table|svg)\s*>`)
+	summaryDropAnchorRe = regexp.MustCompile(`(?is)<a\b[^>]*class="[^"]*heading-anchor[^"]*"[^>]*>.*?</a>`)
 	summaryWhitespaceRe = regexp.MustCompile(`\s+`)
 	summaryPunctGapRe   = regexp.MustCompile(` +([.,;:!?)\]])`)
 )
@@ -654,6 +655,7 @@ func filterSummary(in, param *pongo2.Value) (*pongo2.Value, *pongo2.Error) {
 	}
 
 	s = summaryDropBlockRe.ReplaceAllString(s, " ")
+	s = summaryDropAnchorRe.ReplaceAllString(s, " ")
 	s = htmlTagRe.ReplaceAllString(s, " ")
 	s = html.UnescapeString(s)
 	s = strings.TrimSpace(summaryWhitespaceRe.ReplaceAllString(s, " "))
